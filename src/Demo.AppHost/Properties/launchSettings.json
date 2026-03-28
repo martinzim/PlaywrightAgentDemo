@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "local-windows": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:17133;http://localhost:15050",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21287",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22110",
+        "DEMO_PROFILE": "local-windows",
+        "AI__Endpoint": "http://localhost:11434",
+        "AI__Model": "gpt-oss:20b-cloud",
+        "Browser__StepDelayMilliseconds": "0",
+        "Test__PromptFile": "contact-form.md"
+      }
+    },
+    "local-containerized-runner": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DEMO_PROFILE": "local-containerized-runner",
+        "AI__Endpoint": "http://host.docker.internal:11434",
+        "AI__Model": "gpt-oss:20b-cloud",
+        "Browser__StepDelayMilliseconds": "0",
+        "Test__PromptFile": "homepage-smoke.md"
+      }
+    },
+    "ci-agent": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DEMO_PROFILE": "ci-agent",
+        "AI__Endpoint": "http://localhost:11434",
+        "AI__Model": "gpt-oss:20b-cloud",
+        "Browser__StepDelayMilliseconds": "0",
+        "Test__PromptFile": "homepage-smoke.md"
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+@page
+@model DemoWeb.Pages.StatusModel
+@{
+    ViewData["Title"] = "Status";
+}
+<section class="panel-grid">
+    <div>
+        <p class="section-kicker">Release status</p>
+        <h1>Operational rollout is on track.</h1>
+        <p class="supporting-copy">
+            This page combines assertions on static text, timestamps, and a modal-like details card.
+        </p>
+        <div class="panel-actions">
+            <button type="button" class="ghost-cta" data-testid="release-modal-button" onclick="window.demoSite.toggleReleaseModal()">
+                Toggle maintenance details
+            </button>
+        </div>
+        <div id="release-modal" class="modal-card" data-testid="release-modal">
+            <h3>Maintenance window</h3>
+            <p data-testid="release-modal-text">Planned rollout: Saturday 22:00 CET, no more than 20 minutes downtime.</p>
+        </div>
+    </div>
+    <div class="status-card">
+        <div class="status-list">
+            @foreach (var item in Model.Items)
+            {
+                <div class="status-item" data-testid="@item.TestId">
+                    <div>
+                        <strong>@item.Name</strong>
+                        <div class="form-hint">@item.Description</div>
+                    </div>
+                    <span class="@(item.IsHealthy ? "status-ok" : "status-warn")">@item.Label</span>
+                </div>
+            }
+        </div>
+        <p class="form-hint" data-testid="release-updated-at">
+            Last updated: @Model.LastUpdatedUtc.ToString("yyyy-MM-dd HH:mm 'UTC'")
+        </p>
+    </div>
+</section>

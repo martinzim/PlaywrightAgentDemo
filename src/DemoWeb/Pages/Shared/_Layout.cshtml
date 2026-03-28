@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DemoWeb</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DemoWeb.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-shell">
+        <nav class="topbar">
+            <a class="brandmark" data-testid="brand-link" asp-area="" asp-page="/Index">Northwind Fabrication</a>
+            <div class="topbar-links">
+                <a data-testid="nav-home" asp-page="/Index">Home</a>
+                <a data-testid="nav-contact" asp-page="/Contact">Contact</a>
+                <a data-testid="nav-login" asp-page="/Login">Client portal</a>
+                <a data-testid="nav-status" asp-page="/Status">Status</a>
+            </div>
+        </nav>
+    </header>
+    <div class="page-shell">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="site-footer">
+        <div class="page-shell footer-inner">
+            <span>&copy; 2026 Northwind Fabrication</span>
+            <span data-testid="footer-copy">Demo site for AI browser automation.</span>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

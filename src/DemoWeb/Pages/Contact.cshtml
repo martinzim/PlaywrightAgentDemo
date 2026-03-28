@@ -1,0 +1,55 @@
+@page
+@model DemoWeb.Pages.ContactModel
+@{
+    ViewData["Title"] = "Contact";
+}
+<section class="panel-grid">
+    <div>
+        <p class="section-kicker">Contact intake</p>
+        <h1>Book a discovery session.</h1>
+        <p class="supporting-copy">
+            This form exists so AI-driven browser tests can validate labels, inputs, validation messages,
+            and a successful submit path.
+        </p>
+    </div>
+    <div class="form-panel">
+        @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+        {
+            <div class="toast-banner" data-testid="contact-success">@Model.SuccessMessage</div>
+        }
+        <form method="post" data-testid="contact-form">
+            <div class="field-grid">
+                <div class="field">
+                    <label asp-for="Input.Name"></label>
+                    <input asp-for="Input.Name" data-testid="contact-name" />
+                    <span asp-validation-for="Input.Name" class="validation" data-testid="contact-name-validation"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" data-testid="contact-email" />
+                    <span asp-validation-for="Input.Email" class="validation" data-testid="contact-email-validation"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.Company"></label>
+                    <input asp-for="Input.Company" data-testid="contact-company" />
+                    <span asp-validation-for="Input.Company" class="validation"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.Topic"></label>
+                    <select asp-for="Input.Topic" asp-items="Model.TopicOptions" data-testid="contact-topic"></select>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.Message"></label>
+                    <textarea asp-for="Input.Message" data-testid="contact-message"></textarea>
+                    <span asp-validation-for="Input.Message" class="validation" data-testid="contact-message-validation"></span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="primary-cta" data-testid="contact-submit">Send request</button>
+            </div>
+        </form>
+    </div>
+</section>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

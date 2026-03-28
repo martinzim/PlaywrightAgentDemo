@@ -1,0 +1,31 @@
+trigger: none
+
+variables:
+  BuildConfiguration: Release
+  AiEndpoint: http://ollama.internal:11434
+  AiModel: llama3.2
+
+stages:
+- stage: BrowserTests
+  jobs:
+  - job: ContainerizedRunner
+    pool:
+      name: Default
+    steps:
+    - checkout: self
+    - script: dotnet restore DemoPlaywrightAgent.slnx
+      displayName: Restore
+    - script: dotnet build DemoPlaywrightAgent.slnx --configuration $(BuildConfiguration)
+      displayName: Build
+    - script: dotnet test tests/AiBrowserTester.Tests/AiBrowserTester.Tests.csproj --configuration $(BuildConfiguration)
+      displayName: Unit tests
+    - script: docker build -t ai-browser-tester:ci src/AiBrowserTester
+      displayName: Build runner image
+    - script: |
+        docker run --rm --ipc=host ^
+          -e AI__Endpoint=$(AiEndpoint) ^
+          -e AI__Model=$(AiModel) ^
+          -e Browser__Name=chromium ^
+          -e Browser__Headed=false ^
+          ai-browser-tester:ci
+      displayName: Run AI browser smoke test

@@ -1,0 +1,48 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Northwind Fabrication";
+}
+<section class="hero-grid">
+    <div class="hero-copy">
+        <p class="eyebrow">AI-ready operations for industrial teams</p>
+        <h1 data-testid="hero-title">Modernize field operations without rewriting your business.</h1>
+        <p class="hero-text">
+            Northwind Fabrication helps service and manufacturing teams digitize inspections, customer requests,
+            and shop-floor incidents across plants in Europe.
+        </p>
+        <div class="hero-actions">
+            <a class="primary-cta" data-testid="hero-cta" asp-page="/Contact">Book a discovery session</a>
+            <a class="secondary-cta" data-testid="hero-secondary" asp-page="/Status">See release status</a>
+        </div>
+    </div>
+    <aside class="hero-card" data-testid="hero-card">
+        <p class="metric-label">Average rollout</p>
+        <p class="metric-value">21 days</p>
+        <ul>
+            <li data-testid="feature-one">Connected shop-floor incident tracking</li>
+            <li data-testid="feature-two">Ops dashboards for branch managers</li>
+            <li data-testid="feature-three">Automated customer follow-up flows</li>
+        </ul>
+    </aside>
+</section>
+<section class="section-grid" aria-labelledby="capabilities-heading">
+    <div>
+        <p class="section-kicker">Capabilities</p>
+        <h2 id="capabilities-heading">Built for repeatable browser automation demos.</h2>
+    </div>
+    <div class="capability-list">
+        <article data-testid="capability-contact">
+            <h3>Contact intake</h3>
+            <p>Structured form with validation and a success toast equivalent.</p>
+        </article>
+        <article data-testid="capability-login">
+            <h3>Negative login</h3>
+            <p>Friendly but strict invalid credential path for AI assertions.</p>
+        </article>
+        <article data-testid="capability-status">
+            <h3>Dynamic content</h3>
+            <p>Status page with a modal and changing release timestamp.</p>
+        </article>
+    </div>
+</section>
