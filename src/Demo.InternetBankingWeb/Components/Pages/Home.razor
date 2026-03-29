@@ -4,46 +4,46 @@
 
 <PageTitle>Prihlasenie | Demo Internet Banking</PageTitle>
 
-<section class="prima-legacy-page">
-    <div class="prima-legacy-wrap">
-        <div class="prima-legacy-social">
-            <span class="prima-legacy-social__icon">YT</span>
-            <span class="prima-legacy-social__icon">in</span>
-            <span class="prima-legacy-social__icon">RSS</span>
-            <span class="prima-legacy-social__icon">iOS</span>
-            <span class="prima-legacy-social__icon">D</span>
+<section class="bank-legacy-page">
+    <div class="bank-legacy-wrap">
+        <div class="bank-legacy-social">
+            <span class="bank-legacy-social__icon">DB</span>
+            <span class="bank-legacy-social__icon">24</span>
+            <span class="bank-legacy-social__icon">SE</span>
+            <span class="bank-legacy-social__icon">AP</span>
+            <span class="bank-legacy-social__icon">M</span>
         </div>
 
-        <section class="prima-legacy-panel">
-            <header class="prima-legacy-header">
-                <div class="prima-legacy-logo" data-testid="brand-mark">
-                    <span>Prima Banka</span>
-                    <span class="prima-legacy-logo__mark"></span>
+        <section class="bank-legacy-panel">
+            <header class="bank-legacy-header">
+                <div class="bank-legacy-logo" data-testid="brand-mark">
+                    <span>Demo Bank</span>
+                    <span class="bank-legacy-logo__mark">•</span>
                 </div>
-                <div class="prima-legacy-contact">
-                    <div>Infolinka NONSTOP: <strong>0850 700 007</strong></div>
-                    <div>e-mail: <strong>info@primabanka.sk</strong></div>
+                <div class="bank-legacy-contact">
+                    <div>Klientska linka: <strong>0800 310 410</strong></div>
+                    <div>e-mail: <strong>support@demobank.demo</strong></div>
                 </div>
             </header>
 
-            <div class="prima-legacy-main">
-                <EditForm Model="Input" OnValidSubmit="HandleLoginAsync" class="prima-legacy-login" data-testid="login-form">
+            <div class="bank-legacy-main">
+                <EditForm Model="Input" OnValidSubmit="HandleLoginAsync" class="bank-legacy-login" data-testid="login-form">
                     <DataAnnotationsValidator />
                     <ValidationSummary />
 
                     <h1 data-testid="login-page-title">Internet banking</h1>
 
-                    <div class="bank-field prima-legacy-field">
-                        <label class="bank-label prima-legacy-label" for="login-username">Prihlasovacie meno/Alias/PID</label>
-                        <InputText id="login-username" class="bank-input prima-legacy-input" @bind-Value="Input.Username" data-testid="login-username" />
+                    <div class="bank-field bank-legacy-field">
+                        <label class="bank-label bank-legacy-label" for="login-username">Prihlasovacie meno / Alias / ID</label>
+                        <InputText id="login-username" class="bank-input bank-legacy-input" @bind-Value="Input.Username" data-testid="login-username" />
                     </div>
 
-                    <div class="bank-field prima-legacy-field">
-                        <label class="bank-label prima-legacy-label" for="login-password">Heslo/PIN</label>
-                        <InputText id="login-password" type="@(ShowPassword ? "text" : "password")" class="bank-input prima-legacy-input" @bind-Value="Input.Password" data-testid="login-password" />
+                    <div class="bank-field bank-legacy-field">
+                        <label class="bank-label bank-legacy-label" for="login-password">Heslo / PIN</label>
+                        <InputText id="login-password" type="@(ShowPassword ? "text" : "password")" class="bank-input bank-legacy-input" @bind-Value="Input.Password" data-testid="login-password" />
                     </div>
 
-                    <label class="prima-legacy-checkbox">
+                    <label class="bank-legacy-checkbox">
                         <InputCheckbox @bind-Value="ShowPassword" />
                         <span>Zobrazit heslo</span>
                     </label>
@@ -53,26 +53,26 @@
                         <p class="form-error" data-testid="login-error">@ErrorMessage</p>
                     }
 
-                    <button type="submit" class="prima-legacy-submit" data-testid="login-submit">
+                    <button type="submit" class="bank-legacy-submit" data-testid="login-submit">
                         Prihlasit sa
                         <span>&rsaquo;</span>
                     </button>
 
-                    <div class="prima-legacy-help">
+                    <div class="bank-legacy-help">
                         <a href="/help/security" data-testid="login-security-link">Nedari sa vam prihlasit?</a>
                     </div>
                 </EditForm>
 
-                <section class="prima-legacy-campaign">
-                    <div class="prima-legacy-campaign__tab">Sporenie k Osobnemu uctu</div>
-                    <div class="prima-legacy-campaign__content">
-                        <div class="prima-legacy-campaign__offer">
-                            <div class="prima-legacy-rate">5,0%</div>
-                            <p>rocne pocas celej doby sporenia</p>
+                <section class="bank-legacy-campaign">
+                    <div class="bank-legacy-campaign__tab">Flexi rezerva k beznemu uctu</div>
+                    <div class="bank-legacy-campaign__content">
+                        <div class="bank-legacy-campaign__offer">
+                            <div class="bank-legacy-rate">2,9%</div>
+                            <p>rocny bonus pre aktivnych klientov banky</p>
                         </div>
-                        <div class="prima-legacy-badge">TERAZ AJ PRE DETI A STUDENTOV</div>
+                        <div class="bank-legacy-badge">NOVY ONLINE BALIK PRE DOMACNOSTI</div>
                     </div>
-                    <div class="prima-legacy-slider">
+                    <div class="bank-legacy-slider">
                         <span></span>
                         <span class="is-active"></span>
                         <span></span>
@@ -82,25 +82,25 @@
             </div>
         </section>
 
-        <section class="prima-legacy-footer">
-            <article class="prima-legacy-footer__card">
-                <h2>Stiahnite si Prima banku do mobilu</h2>
-                <p>S aplikaciou Penazenka ziskate dokonaly prehlad o vsetkych produktoch, ktore vyuzivate, priamo v mobile a to 24 hodin denne.</p>
+        <section class="bank-legacy-footer">
+            <article class="bank-legacy-footer__card">
+                <h2>Mobilna app Demo Pocket</h2>
+                <p>Spravujte ucty, karty a notifikacie aj mimo kancelarie v prehladnej mobilnej aplikacii.</p>
             </article>
-            <article class="prima-legacy-footer__card">
-                <h2>Platte jednoducho mobilom</h2>
-                <p>Vyskusajte platby mobilom alebo hodinkami s Google Pay, Apple Pay, Garmin Pay alebo Xiaomi Pay.</p>
+            <article class="bank-legacy-footer__card">
+                <h2>Okamzite platby a sablony</h2>
+                <p>Ukladajte si najcastejsich prijemcov a posielajte platby s rychlym potvrdenim priamo z dashboardu.</p>
             </article>
-            <article class="prima-legacy-footer__card">
+            <article class="bank-legacy-footer__card">
                 <h2>Bezpecnost</h2>
-                <p>Prakticke informacie o najdolezitejsich bezpecnostnych pravidlach pri praci s internet bankingom aj mobilnou aplikaciou.</p>
+                <p>Prakticke odporucania pre bezpecne prihlasovanie, autorizaciu platieb a ochranu pred phishingom.</p>
             </article>
         </section>
 
-        <div class="prima-legacy-meta">
+        <div class="bank-legacy-meta">
             <p data-testid="demo-credentials">Demo prihlasenie: @PortalState.DemoCredentials</p>
             <p>Demo autorizacny kod: <span data-testid="demo-auth-code">246810</span></p>
-            <p>&copy; 2026 Prima banka Slovensko, a.s.</p>
+            <p>&copy; 2026 Demo Bank Digital, a.s.</p>
         </div>
     </div>
 </section>
