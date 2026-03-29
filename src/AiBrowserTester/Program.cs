@@ -18,7 +18,11 @@ builder.Services.Configure<AiOptions>(builder.Configuration.GetSection("AI"));
 builder.Services.Configure<BrowserOptions>(builder.Configuration.GetSection("Browser"));
 builder.Services.Configure<ArtifactOptions>(builder.Configuration.GetSection("Artifacts"));
 
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient(nameof(OllamaPlannerProvider), (serviceProvider, client) =>
+{
+    var aiOptions = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<AiOptions>>().Value;
+    client.Timeout = TimeSpan.FromSeconds(Math.Max(aiOptions.TimeoutSeconds, 1));
+});
 
 builder.Services.AddSingleton<IAiTestPlannerProvider, OllamaPlannerProvider>();
 builder.Services.AddSingleton<ITestScenarioPlanner, AgentFrameworkScenarioPlanner>();

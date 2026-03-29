@@ -13,22 +13,46 @@ public sealed class OllamaPlannerProvider(IHttpClientFactory httpClientFactory, 
     public async Task<ScenarioPlan> CreatePlanAsync(TestRunRequest request, CancellationToken cancellationToken)
     {
         var settings = options.Value;
-        var client = httpClientFactory.CreateClient(nameof(OllamaPlannerProvider));
-        client.BaseAddress = new Uri(settings.Endpoint.TrimEnd('/'));
         var payload = new OllamaChatRequest(settings.Model, false,
         [
             new("system", settings.SystemPrompt),
             new("user", BuildPrompt(request))
         ]);
-        var response = await client.PostAsJsonAsync("/api/chat", payload, cancellationToken);
-        response.EnsureSuccessStatusCode();
-        var chatResponse = await response.Content.ReadFromJsonAsync<OllamaChatResponse>(JsonOptions, cancellationToken)
-            ?? throw new InvalidOperationException("Ollama returned an empty response.");
-        var content = chatResponse.Message?.Content
-            ?? throw new InvalidOperationException("Ollama response did not contain a message.");
-        var json = JsonExtraction.Extract(content);
-        return JsonSerializer.Deserialize<ScenarioPlan>(json, JsonOptions)
-            ?? throw new InvalidOperationException("Ollama response JSON could not be deserialized.");
+
+        Exception? lastException = null;
+
+        foreach (var endpoint in GetEndpointCandidates(settings.Endpoint))
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient(nameof(OllamaPlannerProvider));
+                client.BaseAddress = new Uri(endpoint.TrimEnd('/'));
+                var response = await client.PostAsJsonAsync("/api/chat", payload, cancellationToken);
+                response.EnsureSuccessStatusCode();
+                var chatResponse = await response.Content.ReadFromJsonAsync<OllamaChatResponse>(JsonOptions, cancellationToken)
+                    ?? throw new InvalidOperationException("Ollama returned an empty response.");
+                var content = chatResponse.Message?.Content
+                    ?? throw new InvalidOperationException("Ollama response did not contain a message.");
+                var json = JsonExtraction.Extract(content);
+                return JsonSerializer.Deserialize<ScenarioPlan>(json, JsonOptions)
+                    ?? throw new InvalidOperationException("Ollama response JSON could not be deserialized.");
+            }
+            catch (HttpRequestException ex) when (IsConnectionFailure(ex))
+            {
+                lastException = ex;
+            }
+        }
+
+        if (lastException is not null)
+        {
+            throw new InvalidOperationException(
+                $"Unable to reach Ollama from the current environment. Tried: {string.Join(", ", GetEndpointCandidates(settings.Endpoint))}. " +
+                "If the tester runs in a container, make sure Ollama is reachable from containers and is not bound only to 127.0.0.1 on the host. " +
+                "Typical fixes are setting Ollama to listen on 0.0.0.0:11434 or using the correct host alias for your runtime.",
+                lastException);
+        }
+
+        throw new InvalidOperationException("Ollama request failed for an unknown reason.");
     }
 
     private static string BuildPrompt(TestRunRequest request)
@@ -66,6 +90,28 @@ public sealed class OllamaPlannerProvider(IHttpClientFactory httpClientFactory, 
         builder.AppendLine(request.Prompt);
         return builder.ToString();
     }
+
+    private static IReadOnlyList<string> GetEndpointCandidates(string configuredEndpoint)
+    {
+        var normalized = configuredEndpoint.TrimEnd('/');
+        var endpoints = new List<string> { normalized };
+
+        if (normalized.Contains("host.containers.internal", StringComparison.OrdinalIgnoreCase))
+        {
+            endpoints.Add(normalized.Replace("host.containers.internal", "host.docker.internal", StringComparison.OrdinalIgnoreCase));
+        }
+        else if (normalized.Contains("host.docker.internal", StringComparison.OrdinalIgnoreCase))
+        {
+            endpoints.Add(normalized.Replace("host.docker.internal", "host.containers.internal", StringComparison.OrdinalIgnoreCase));
+        }
+
+        return endpoints
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private static bool IsConnectionFailure(HttpRequestException exception) =>
+        exception.InnerException is System.Net.Sockets.SocketException;
 
     private sealed record OllamaChatRequest(string Model, bool Stream, IReadOnlyList<OllamaMessage> Messages);
     private sealed record OllamaChatResponse(OllamaMessage? Message);

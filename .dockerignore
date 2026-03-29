@@ -1,0 +1,13 @@
+.git
+.vs
+.artifacts
+.dotnet
+output
+**/bin
+**/obj
+**/*.user
+**/*.suo
+**/*.tmp
+**/*.log
+README.md
+

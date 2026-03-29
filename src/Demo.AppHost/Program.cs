@@ -1,9 +1,14 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var profile = builder.Configuration["Demo:Profile"] ?? Environment.GetEnvironmentVariable("DEMO_PROFILE") ?? "local-windows";
-var aiEndpoint = builder.AddParameter(
-    "ai-endpoint",
-    builder.Configuration["AI:Endpoint"] ?? Environment.GetEnvironmentVariable("AI__Endpoint") ?? "http://localhost:11434")
+
+// Podman on WSL2 uses host.docker.internal (host.containers.internal is not routed correctly)
+var isContainerizedRunner = string.Equals(profile, "local-containerized-runner", StringComparison.OrdinalIgnoreCase);
+var defaultAiEndpoint = builder.Configuration["AI:Endpoint"]
+    ?? Environment.GetEnvironmentVariable("AI__Endpoint")
+    ?? (isContainerizedRunner ? "http://host.docker.internal:11434" : "http://localhost:11434");
+
+var aiEndpoint = builder.AddParameter("ai-endpoint", defaultAiEndpoint)
     .WithDescription("Ollama endpoint URL used by the AI test planner.")
     .WithCustomInput(parameter => new()
     {
@@ -11,8 +16,8 @@ var aiEndpoint = builder.AddParameter(
         InputType = InputType.Text,
         Label = "Ollama URL",
         Description = "Base URL of the Ollama API endpoint.",
-        Value = builder.Configuration["AI:Endpoint"] ?? Environment.GetEnvironmentVariable("AI__Endpoint") ?? "http://localhost:11434",
-        Placeholder = "http://localhost:11434"
+        Value = defaultAiEndpoint,
+        Placeholder = isContainerizedRunner ? "http://host.docker.internal:11434" : "http://localhost:11434"
     });
 
 var aiModel = builder.AddParameter(
@@ -27,6 +32,20 @@ var aiModel = builder.AddParameter(
         Description = "Model identifier available in your Ollama instance.",
         Value = builder.Configuration["AI:Model"] ?? Environment.GetEnvironmentVariable("AI__Model") ?? "llama3.2",
         Placeholder = "gpt-oss:20b-cloud"
+    });
+
+var aiTimeoutSeconds = builder.AddParameter(
+    "ai-timeout-seconds",
+    builder.Configuration["AI:TimeoutSeconds"] ?? Environment.GetEnvironmentVariable("AI__TimeoutSeconds") ?? "300")
+    .WithDescription("Timeout for the AI planning request in seconds.")
+    .WithCustomInput(parameter => new()
+    {
+        Name = parameter.Name,
+        InputType = InputType.Number,
+        Label = "AI timeout (s)",
+        Description = "Maximum number of seconds to wait for Ollama to return the generated test plan.",
+        Value = builder.Configuration["AI:TimeoutSeconds"] ?? Environment.GetEnvironmentVariable("AI__TimeoutSeconds") ?? "300",
+        Placeholder = "300"
     });
 
 var stepDelayMilliseconds = builder.AddParameter(
@@ -70,11 +89,17 @@ var web = builder.AddProject<Projects.DemoWeb>("demo-web")
 
 if (string.Equals(profile, "local-containerized-runner", StringComparison.OrdinalIgnoreCase))
 {
+    // launchSettings.json binds to localhost only; override so WSL2 containers reach it via host.docker.internal
+    web.WithEnvironment("ASPNETCORE_URLS",
+        ReferenceExpression.Create($"http://0.0.0.0:{web.GetEndpoint("http").Property(EndpointProperty.Port)}"));
+
     builder.AddDockerfile("ai-browser-tester-container", "..\\..", "src\\AiBrowserTester\\Dockerfile")
         .WithReference(web)
-        .WithEnvironment("Target__BaseUrl", web.GetEndpoint("https"))
+        .WithEnvironment("Target__BaseUrl",
+            ReferenceExpression.Create($"http://host.docker.internal:{web.GetEndpoint("http").Property(EndpointProperty.Port)}"))
         .WithEnvironment("AI__Endpoint", aiEndpoint)
         .WithEnvironment("AI__Model", aiModel)
+        .WithEnvironment("AI__TimeoutSeconds", aiTimeoutSeconds)
         .WithEnvironment("Browser__Name", "chromium")
         .WithEnvironment("Browser__Headed", "false")
         .WithEnvironment("Browser__StepDelayMilliseconds", stepDelayMilliseconds)
@@ -84,12 +109,16 @@ else
 {
     var browser = string.Equals(profile, "ci-agent", StringComparison.OrdinalIgnoreCase) ? "chromium" : "msedge";
     var headed = string.Equals(profile, "local-windows", StringComparison.OrdinalIgnoreCase) ? "true" : "false";
+    var targetBaseUrl = string.Equals(profile, "local-windows", StringComparison.OrdinalIgnoreCase)
+        ? web.GetEndpoint("https")
+        : web.GetEndpoint("http");
 
     builder.AddProject<Projects.AiBrowserTester>("ai-browser-tester")
         .WithReference(web)
-        .WithEnvironment("Target__BaseUrl", web.GetEndpoint("http"))
+        .WithEnvironment("Target__BaseUrl", targetBaseUrl)
         .WithEnvironment("AI__Endpoint", aiEndpoint)
         .WithEnvironment("AI__Model", aiModel)
+        .WithEnvironment("AI__TimeoutSeconds", aiTimeoutSeconds)
         .WithEnvironment("Browser__Name", browser)
         .WithEnvironment("Browser__Headed", headed)
         .WithEnvironment("Browser__StepDelayMilliseconds", stepDelayMilliseconds)

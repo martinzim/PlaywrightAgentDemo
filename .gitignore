@@ -4,6 +4,7 @@ obj/
 .idea/
 .vscode/
 .dotnet/
+.artifacts/
 artifacts/
 TestResults/
 output/playwright/
