@@ -1,0 +1,83 @@
+@page "/accounts"
+@inject BankingPortalState PortalState
+@inject NavigationManager Navigation
+
+<PageTitle>Ucty a pohyby | Demo Internet Banking</PageTitle>
+
+@if (!PortalState.IsAuthenticated)
+{
+    <div class="banking-redirect">Presmerovanie na prihlasenie...</div>
+}
+else
+{
+    <section class="dashboard-grid">
+        <header class="dashboard-hero dashboard-hero--compact dashboard-hero--legacy">
+            <div>
+                <p class="dashboard-hero__eyebrow">Ucty a pohyby</p>
+                <h1 data-testid="accounts-heading">Prehlad uctov</h1>
+                <p class="dashboard-hero__text">Vyhladavajte v historii platieb a kontrolujte zostatky.</p>
+            </div>
+        </header>
+
+        <section class="account-card-grid account-card-grid--legacy">
+            @foreach (var account in PortalState.Accounts)
+            {
+                <article class="account-card" data-testid="account-card">
+                    <span class="account-card__badge" style="background:@account.Accent"></span>
+                    <strong>@account.Title</strong>
+                    <p>@account.AccountNumber</p>
+                    <div class="account-card__balances">
+                        <span>Disponibilny: <strong>@account.AvailableBalance.ToString("N2") @account.Currency</strong></span>
+                        <span>Zuctovany: <strong>@account.BookedBalance.ToString("N2") @account.Currency</strong></span>
+                    </div>
+                </article>
+            }
+        </section>
+
+        <section class="dashboard-panel dashboard-panel--legacy" data-testid="accounts-transactions-panel">
+            <div class="panel-heading">
+                <h2>Vyhladanie pohybov</h2>
+                <p>Napriklad nazov partnera, referencia alebo kategoria.</p>
+            </div>
+
+            <div class="bank-form-row">
+                <label class="bank-label" for="transaction-search">Filter</label>
+                <input id="transaction-search" class="bank-input" data-testid="transaction-search" @bind="SearchQuery" @bind:event="oninput" />
+            </div>
+
+            <div class="transaction-table" data-testid="transaction-list">
+                @foreach (var transaction in FilteredTransactions)
+                {
+                    <article class="transaction-table__row" data-testid="transaction-row">
+                        <div class="transaction-table__identity">
+                            <strong>@transaction.Counterparty</strong>
+                            <span>@transaction.Description</span>
+                            <small>@transaction.Reference</small>
+                        </div>
+                        <div class="transaction-table__meta">
+                            <span>@transaction.AccountTitle</span>
+                            <span>@transaction.Date.ToString("dd.MM.yyyy")</span>
+                            <strong class="@(transaction.Amount >= 0 ? "amount-positive" : "amount-negative")">
+                                @transaction.Amount.ToString("N2") EUR
+                            </strong>
+                        </div>
+                    </article>
+                }
+            </div>
+        </section>
+    </section>
+}
+
+@code {
+    private string SearchQuery { get; set; } = string.Empty;
+
+    private IReadOnlyList<BankTransaction> FilteredTransactions => PortalState.SearchTransactions(SearchQuery);
+
+    protected override void OnInitialized()
+    {
+        if (!PortalState.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/", true);
+        }
+    }
+}

@@ -1,0 +1,24 @@
+<div class="bank-nav" data-testid="bank-nav">
+    <div class="bank-nav__brand">
+        <span class="brand-mark brand-mark--small brand-mark--lime">PB</span>
+        <div>
+            <strong>Prima Banka</strong>
+            <span>Internet banking</span>
+        </div>
+    </div>
+
+    <nav class="bank-nav__menu">
+        <NavLink class="bank-nav__link" href="/dashboard" Match="NavLinkMatch.Prefix" data-testid="nav-dashboard">
+            Prehlad
+        </NavLink>
+        <NavLink class="bank-nav__link" href="/accounts" Match="NavLinkMatch.Prefix" data-testid="nav-accounts">
+            Ucty a pohyby
+        </NavLink>
+        <NavLink class="bank-nav__link" href="/payments/new" Match="NavLinkMatch.Prefix" data-testid="nav-payments">
+            Nova platba
+        </NavLink>
+        <a class="bank-nav__link" href="/help/security" data-testid="nav-security">
+            Bezpecnost
+        </a>
+    </nav>
+</div>

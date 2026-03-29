@@ -1,0 +1,142 @@
+@page "/"
+@inject BankingPortalState PortalState
+@inject NavigationManager Navigation
+
+<PageTitle>Prihlasenie | Demo Internet Banking</PageTitle>
+
+<section class="prima-legacy-page">
+    <div class="prima-legacy-wrap">
+        <div class="prima-legacy-social">
+            <span class="prima-legacy-social__icon">YT</span>
+            <span class="prima-legacy-social__icon">in</span>
+            <span class="prima-legacy-social__icon">RSS</span>
+            <span class="prima-legacy-social__icon">iOS</span>
+            <span class="prima-legacy-social__icon">D</span>
+        </div>
+
+        <section class="prima-legacy-panel">
+            <header class="prima-legacy-header">
+                <div class="prima-legacy-logo" data-testid="brand-mark">
+                    <span>Prima Banka</span>
+                    <span class="prima-legacy-logo__mark"></span>
+                </div>
+                <div class="prima-legacy-contact">
+                    <div>Infolinka NONSTOP: <strong>0850 700 007</strong></div>
+                    <div>e-mail: <strong>info@primabanka.sk</strong></div>
+                </div>
+            </header>
+
+            <div class="prima-legacy-main">
+                <EditForm Model="Input" OnValidSubmit="HandleLoginAsync" class="prima-legacy-login" data-testid="login-form">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <h1 data-testid="login-page-title">Internet banking</h1>
+
+                    <div class="bank-field prima-legacy-field">
+                        <label class="bank-label prima-legacy-label" for="login-username">Prihlasovacie meno/Alias/PID</label>
+                        <InputText id="login-username" class="bank-input prima-legacy-input" @bind-Value="Input.Username" data-testid="login-username" />
+                    </div>
+
+                    <div class="bank-field prima-legacy-field">
+                        <label class="bank-label prima-legacy-label" for="login-password">Heslo/PIN</label>
+                        <InputText id="login-password" type="@(ShowPassword ? "text" : "password")" class="bank-input prima-legacy-input" @bind-Value="Input.Password" data-testid="login-password" />
+                    </div>
+
+                    <label class="prima-legacy-checkbox">
+                        <InputCheckbox @bind-Value="ShowPassword" />
+                        <span>Zobrazit heslo</span>
+                    </label>
+
+                    @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                    {
+                        <p class="form-error" data-testid="login-error">@ErrorMessage</p>
+                    }
+
+                    <button type="submit" class="prima-legacy-submit" data-testid="login-submit">
+                        Prihlasit sa
+                        <span>&rsaquo;</span>
+                    </button>
+
+                    <div class="prima-legacy-help">
+                        <a href="/help/security" data-testid="login-security-link">Nedari sa vam prihlasit?</a>
+                    </div>
+                </EditForm>
+
+                <section class="prima-legacy-campaign">
+                    <div class="prima-legacy-campaign__tab">Sporenie k Osobnemu uctu</div>
+                    <div class="prima-legacy-campaign__content">
+                        <div class="prima-legacy-campaign__offer">
+                            <div class="prima-legacy-rate">5,0%</div>
+                            <p>rocne pocas celej doby sporenia</p>
+                        </div>
+                        <div class="prima-legacy-badge">TERAZ AJ PRE DETI A STUDENTOV</div>
+                    </div>
+                    <div class="prima-legacy-slider">
+                        <span></span>
+                        <span class="is-active"></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <section class="prima-legacy-footer">
+            <article class="prima-legacy-footer__card">
+                <h2>Stiahnite si Prima banku do mobilu</h2>
+                <p>S aplikaciou Penazenka ziskate dokonaly prehlad o vsetkych produktoch, ktore vyuzivate, priamo v mobile a to 24 hodin denne.</p>
+            </article>
+            <article class="prima-legacy-footer__card">
+                <h2>Platte jednoducho mobilom</h2>
+                <p>Vyskusajte platby mobilom alebo hodinkami s Google Pay, Apple Pay, Garmin Pay alebo Xiaomi Pay.</p>
+            </article>
+            <article class="prima-legacy-footer__card">
+                <h2>Bezpecnost</h2>
+                <p>Prakticke informacie o najdolezitejsich bezpecnostnych pravidlach pri praci s internet bankingom aj mobilnou aplikaciou.</p>
+            </article>
+        </section>
+
+        <div class="prima-legacy-meta">
+            <p data-testid="demo-credentials">Demo prihlasenie: @PortalState.DemoCredentials</p>
+            <p>Demo autorizacny kod: <span data-testid="demo-auth-code">246810</span></p>
+            <p>&copy; 2026 Prima banka Slovensko, a.s.</p>
+        </div>
+    </div>
+</section>
+
+@code {
+    private LoginInput Input { get; set; } = new();
+    private string ErrorMessage { get; set; } = string.Empty;
+    private bool ShowPassword { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (PortalState.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/dashboard", true);
+        }
+    }
+
+    private Task HandleLoginAsync()
+    {
+        if (!PortalState.Login(Input.Username, Input.Password))
+        {
+            ErrorMessage = "Prihlasovacie meno alebo heslo nie je spravne.";
+            return Task.CompletedTask;
+        }
+
+        ErrorMessage = string.Empty;
+        Navigation.NavigateTo("/dashboard");
+        return Task.CompletedTask;
+    }
+
+    private sealed class LoginInput
+    {
+        [Required]
+        public string Username { get; set; } = "demo.klient";
+
+        [Required]
+        public string Password { get; set; } = "Demo123!";
+    }
+}

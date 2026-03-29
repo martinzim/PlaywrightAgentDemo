@@ -1,0 +1,1025 @@
+:root {
+    --bank-bg: #eef2f7;
+    --bank-surface: #ffffff;
+    --bank-surface-soft: #f8fbff;
+    --bank-border: #d7dfeb;
+    --bank-text: #17365d;
+    --bank-muted: #6a7d96;
+    --bank-accent: #0c63ce;
+    --bank-accent-dark: #084e9d;
+    --bank-success: #1f9d73;
+    --bank-success-soft: #e7f7f1;
+    --bank-danger: #c93e4f;
+    --bank-shadow: 0 20px 48px rgba(22, 47, 84, 0.12);
+    --prima-navy: #073c7a;
+    --prima-navy-deep: #052d62;
+    --prima-sky: #dfe9f6;
+    --prima-lime: #acd000;
+    --prima-lime-dark: #8eaf00;
+    --prima-red: #e10f17;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    color: var(--bank-text);
+    background:
+        repeating-linear-gradient(135deg, #fafafa 0, #fafafa 6px, #f1f1f1 6px, #f1f1f1 8px);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+.bank-shell {
+    min-height: 100vh;
+}
+
+.bank-shell--authenticated {
+    display: grid;
+    grid-template-columns: 288px 1fr;
+}
+
+.bank-shell--anonymous {
+    display: block;
+}
+
+.bank-shell__sidebar {
+    padding: 18px 18px 24px;
+    background: linear-gradient(180deg, #a7c900 0%, #98ba00 100%);
+    color: #fff;
+    border-right: 1px solid #839d00;
+}
+
+.bank-shell__main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f7f7f4;
+}
+
+.bank-shell__content {
+    padding: 22px 24px 32px;
+    max-width: 1120px;
+}
+
+.bank-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 24px;
+    background: linear-gradient(180deg, #adc900 0%, #9fbe00 100%);
+    border-bottom: 1px solid #859d00;
+}
+
+.bank-topbar__label {
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.bank-topbar__identity strong {
+    color: white;
+    font-size: 1.05rem;
+}
+
+.bank-topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #294100;
+    font-size: 0.88rem;
+}
+
+.bank-topbar__status strong {
+    color: white;
+}
+
+.bank-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.bank-nav__brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 4px 16px;
+    border-bottom: 1px solid rgba(104, 123, 0, 0.35);
+}
+
+.bank-nav__brand strong,
+.bank-nav__brand span {
+    display: block;
+}
+
+.bank-nav__brand span {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.9rem;
+}
+
+.brand-mark {
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+    border-radius: 20px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: white;
+    background: linear-gradient(145deg, #1e7be1 0%, #0b57b7 100%);
+    box-shadow: 0 22px 34px rgba(9, 40, 80, 0.24);
+}
+
+.brand-mark--prima {
+    border-radius: 18px;
+    background: linear-gradient(180deg, #1775db 0%, #0a57b9 100%);
+}
+
+.brand-mark--small {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    font-size: 1rem;
+}
+
+.brand-mark--lime {
+    background: linear-gradient(180deg, #f6f6f6 0%, #d7d7d7 100%);
+    color: #7fa000;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.bank-nav__menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bank-nav__link {
+    padding: 11px 14px;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+.bank-nav__link.active,
+.bank-nav__link:hover {
+    color: #4a5d00;
+    background: linear-gradient(180deg, #fdfdfd 0%, #e5e5e5 100%);
+    border-color: rgba(105, 124, 0, 0.35);
+}
+
+.dashboard-grid {
+    display: grid;
+    gap: 18px;
+}
+
+.dashboard-hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px 32px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, rgba(13, 99, 200, 0.98) 0%, rgba(19, 71, 130, 0.98) 100%);
+    color: white;
+    box-shadow: var(--bank-shadow);
+}
+
+.dashboard-hero--legacy {
+    padding: 18px 22px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #b0cf03 0%, #a2c000 100%);
+    color: white;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.dashboard-hero--compact {
+    padding: 22px 28px;
+}
+
+.dashboard-hero__eyebrow,
+.login-shell__eyebrow {
+    margin: 0 0 12px;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.75;
+}
+
+.dashboard-hero__text,
+.login-shell__lead {
+    margin: 10px 0 0;
+    max-width: 48rem;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.6;
+}
+
+.dashboard-hero__meta {
+    align-self: center;
+    padding: 16px 18px;
+    min-width: 180px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    text-align: right;
+}
+
+.dashboard-hero--legacy .dashboard-hero__meta {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 220px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.16);
+    color: white;
+}
+
+.summary-cards,
+.account-card-grid,
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.summary-cards--legacy,
+.account-card-grid--legacy {
+    gap: 14px;
+}
+
+.summary-card,
+.account-card,
+.quick-action,
+.dashboard-panel,
+.login-card,
+.security-tip,
+.security-card {
+    background: var(--bank-surface);
+    border: 1px solid rgba(18, 48, 77, 0.08);
+    box-shadow: var(--bank-shadow);
+}
+
+.summary-card,
+.account-card {
+    padding: 24px;
+    border-radius: 24px;
+}
+
+.summary-card,
+.account-card,
+.quick-action,
+.dashboard-panel {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.summary-card--calm {
+    background: linear-gradient(180deg, #f7f9eb 0%, #eef4cf 100%);
+}
+
+.summary-card--dark {
+    background: linear-gradient(180deg, #9ebc00 0%, #8eac00 100%);
+    color: white;
+}
+
+.summary-card__label,
+.summary-card__detail {
+    display: block;
+    color: var(--bank-muted);
+}
+
+.summary-card--dark .summary-card__label,
+.summary-card--dark .summary-card__detail {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.summary-card__value {
+    display: block;
+    margin: 12px 0 6px;
+    font-size: 1.7rem;
+    line-height: 1;
+}
+
+.dashboard-panel {
+    padding: 24px;
+    border-radius: 28px;
+}
+
+.dashboard-panel--legacy {
+    padding: 18px 20px 20px;
+    border: 1px solid #d8d8d8;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
+}
+
+.panel-heading h2,
+.panel-heading h1 {
+    margin: 0;
+    color: #96b500;
+    font-size: 1.55rem;
+    font-weight: 300;
+}
+
+.panel-heading p {
+    margin: 6px 0 0;
+    color: #666;
+}
+
+.transaction-list,
+.message-stack,
+.transaction-table {
+    margin-top: 20px;
+    display: grid;
+    gap: 14px;
+}
+
+.transaction-row,
+.transaction-table__row,
+.message-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 14px 16px;
+    border-radius: 4px;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+}
+
+.transaction-row p,
+.transaction-table__identity span,
+.transaction-table__identity small,
+.message-card p {
+    margin: 6px 0 0;
+    color: var(--bank-muted);
+}
+
+.transaction-table__identity {
+    display: grid;
+    gap: 4px;
+}
+
+.transaction-table__meta {
+    display: grid;
+    justify-items: end;
+    gap: 4px;
+    color: var(--bank-muted);
+    text-align: right;
+}
+
+.amount-positive {
+    color: var(--bank-success);
+}
+
+.amount-negative {
+    color: var(--bank-danger);
+}
+
+.quick-action {
+    display: block;
+    padding: 18px 16px;
+    border-radius: 4px;
+    border-color: #d2d2d2;
+}
+
+.quick-action strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #7ea000;
+}
+
+.quick-action span {
+    color: var(--bank-muted);
+    line-height: 1.5;
+}
+
+.account-card {
+    position: relative;
+    overflow: hidden;
+    padding: 18px;
+}
+
+.account-card__badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 76px;
+    height: 6px;
+}
+
+.account-card__balances {
+    margin-top: 18px;
+    display: grid;
+    gap: 8px;
+    color: var(--bank-muted);
+}
+
+.prima-legacy-page {
+    min-height: 100vh;
+    padding: 16px 0 48px;
+}
+
+.prima-legacy-wrap {
+    width: min(960px, calc(100vw - 36px));
+    margin: 0 auto;
+}
+
+.prima-legacy-social {
+    display: flex;
+    gap: 6px;
+    margin: 0 0 18px 28px;
+}
+
+.prima-legacy-social__icon {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #749000;
+    background: linear-gradient(180deg, #d7f154 0%, #99b900 100%);
+    color: #4b5d00;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.prima-legacy-panel {
+    background: var(--prima-lime);
+    border: 1px solid #8ea000;
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.prima-legacy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 28px 12px;
+    border-bottom: 1px solid rgba(84, 104, 0, 0.35);
+}
+
+.prima-legacy-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    font-size: 23px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+}
+
+.prima-legacy-logo__mark {
+    font-weight: 700;
+    font-size: 27px;
+    line-height: 1;
+}
+
+.prima-legacy-contact {
+    text-align: right;
+    color: #233200;
+    font-size: 17px;
+    line-height: 1.25;
+}
+
+.prima-legacy-contact strong {
+    color: #fff;
+}
+
+.prima-legacy-main {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 26px;
+    padding: 24px 28px 22px;
+}
+
+.prima-legacy-login {
+    padding: 26px 30px 22px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #fdfdfd 100%);
+    border: 1px solid #7fa100;
+    box-shadow: 0 2px 4px rgba(55, 66, 0, 0.2);
+}
+
+.prima-legacy-login h1 {
+    margin: 0 0 10px;
+    color: #9dbe00;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+}
+
+.prima-legacy-field {
+    margin-top: 10px;
+    gap: 4px;
+}
+
+.prima-legacy-label {
+    color: #3d3d3d;
+    font-size: 14px;
+}
+
+.prima-legacy-input {
+    min-height: 32px;
+    padding: 4px 8px;
+    border: 1px solid #b3b3b3;
+    border-radius: 2px;
+    color: #222;
+}
+
+.prima-legacy-input:focus {
+    outline: none;
+    border-color: #8db100;
+    box-shadow: 0 0 0 2px rgba(172, 208, 0, 0.2);
+}
+
+.prima-legacy-checkbox {
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+    font-size: 14px;
+}
+
+.prima-legacy-checkbox input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.prima-legacy-submit {
+    width: 100%;
+    margin-top: 16px;
+    min-height: 35px;
+    border: 0;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #b4d700 0%, #a0c500 100%);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.prima-legacy-submit span {
+    margin-left: 6px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.prima-legacy-help {
+    margin-top: 14px;
+    font-size: 13px;
+}
+
+.prima-legacy-help a {
+    color: #9dbe00;
+    font-weight: 500;
+}
+
+.prima-legacy-campaign {
+    position: relative;
+    min-height: 300px;
+    padding: 56px 28px 30px;
+    border: 1px solid #7fa100;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #b4d700 0%, #a8cb00 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 4px rgba(55, 66, 0, 0.2);
+    overflow: hidden;
+}
+
+.prima-legacy-campaign__tab {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 14px 20px 16px;
+    min-width: 280px;
+    border-radius: 0 0 18px 0;
+    background: var(--prima-red);
+    color: #fff;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.prima-legacy-campaign__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.prima-legacy-campaign__offer {
+    max-width: 360px;
+    color: #fff;
+}
+
+.prima-legacy-rate {
+    font-size: 122px;
+    line-height: 0.9;
+    font-weight: 700;
+    letter-spacing: -0.08em;
+}
+
+.prima-legacy-campaign__offer p {
+    margin: 6px 0 0;
+    max-width: 250px;
+    font-size: 24px;
+    line-height: 1.05;
+    font-weight: 700;
+}
+
+.prima-legacy-badge {
+    width: 172px;
+    height: 172px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    border-radius: 50%;
+    background: #e30613;
+    color: #fff;
+    text-align: center;
+    font-size: 22px;
+    line-height: 1.12;
+    font-weight: 700;
+    transform: rotate(-8deg);
+}
+
+.prima-legacy-slider {
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
+    display: inline-flex;
+    gap: 10px;
+    padding: 11px 18px 9px;
+    border-radius: 12px 12px 4px 4px;
+    background: linear-gradient(180deg, #f0f0f0 0%, #cfcfcf 100%);
+    border: 1px solid #9f9f9f;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.22);
+}
+
+.prima-legacy-slider span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #787878;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.prima-legacy-slider .is-active {
+    background: #b3d300;
+}
+
+.prima-legacy-footer {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    padding: 26px 28px 18px;
+    background: #fff;
+    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #d9d9d9;
+}
+
+.prima-legacy-footer__card {
+    padding: 6px 18px 0 0;
+    min-height: 138px;
+}
+
+.prima-legacy-footer__card + .prima-legacy-footer__card {
+    padding-left: 18px;
+    border-left: 1px solid #dadada;
+}
+
+.prima-legacy-footer__card h2 {
+    margin: 0 0 10px;
+    color: #94b400;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.prima-legacy-footer__card p {
+    margin: 0;
+    color: #4a4a4a;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.prima-legacy-meta {
+    padding: 16px 28px 18px;
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    border-top: 0;
+    text-align: center;
+    color: #7e7e7e;
+    font-size: 12px;
+}
+
+.prima-legacy-meta p {
+    margin: 4px 0;
+}
+
+.bank-field,
+.bank-form-row {
+    display: grid;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.bank-form-grid {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+}
+
+.bank-field--wide {
+    grid-column: 1 / -1;
+}
+
+.bank-label {
+    font-size: 0.88rem;
+    color: #4f4f4f;
+}
+
+.bank-input {
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 10px;
+    border: 1px solid #bcbcbc;
+    border-radius: 3px;
+    background: white;
+    color: #222;
+    box-sizing: border-box;
+}
+
+.bank-input:focus {
+    outline: none;
+    border-color: #8caf00;
+    box-shadow: 0 0 0 2px rgba(172, 208, 0, 0.16);
+}
+
+.bank-input--textarea {
+    min-height: 116px;
+    resize: vertical;
+}
+
+.bank-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #b4d700 0%, #9fbe00 100%);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.bank-button--full {
+    width: 100%;
+}
+
+.bank-button--secondary,
+.bank-button--ghost {
+    background: linear-gradient(180deg, #f6f6f6 0%, #dfdfdf 100%);
+    color: #536600;
+    border: 1px solid #b8b8b8;
+}
+
+.payment-review__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.receipt-grid {
+    margin: 20px 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.receipt-grid dt {
+    color: var(--bank-muted);
+    font-size: 0.88rem;
+}
+
+.receipt-grid dd {
+    margin: 6px 0 0;
+    font-weight: 600;
+}
+
+.form-error,
+.validation-message,
+.validation-summary-errors {
+    color: var(--bank-danger);
+}
+
+.payment-success {
+    border-color: #cfd9a5;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8e4 100%);
+}
+
+.banking-redirect {
+    padding: 48px;
+}
+
+.security-page {
+    min-height: 100vh;
+    background: repeating-linear-gradient(135deg, #fafafa 0, #fafafa 6px, #f1f1f1 6px, #f1f1f1 8px);
+}
+
+.security-page__wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 26px 18px 40px;
+    display: grid;
+    gap: 0;
+}
+
+.security-page__hero {
+    padding: 18px 24px;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, #b0cf03 0%, #a2c000 100%);
+    color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+}
+
+.security-page__content {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding: 18px 24px 24px;
+    background: #fff;
+    border: 1px solid #d8d8d8;
+    border-top: 0;
+}
+
+.security-card {
+    padding: 18px;
+    border-radius: 6px;
+    border: 1px solid #dadada;
+    box-shadow: none;
+}
+
+.security-card h2 {
+    margin: 0 0 10px;
+    color: #96b500;
+    font-size: 1.45rem;
+    font-weight: 300;
+}
+
+.security-card ul {
+    padding-left: 20px;
+    color: var(--bank-muted);
+    line-height: 1.7;
+}
+
+.bank-link {
+    color: var(--bank-accent-dark);
+    font-weight: 600;
+}
+
+#blazor-error-ui {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: #2c3d54;
+    color: white;
+    display: none;
+}
+
+#blazor-error-ui .reload {
+    color: white;
+}
+
+@media (max-width: 1100px) {
+    .bank-shell--authenticated {
+        grid-template-columns: 1fr;
+    }
+
+    .bank-shell__sidebar {
+        padding: 18px;
+        border-right: 0;
+        border-bottom: 1px solid #839d00;
+    }
+
+    .summary-cards,
+    .account-card-grid,
+    .quick-actions,
+    .security-page__content,
+    .receipt-grid,
+    .bank-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .prima-legacy-main,
+    .prima-legacy-footer {
+        grid-template-columns: 1fr;
+    }
+
+    .prima-legacy-footer__card + .prima-legacy-footer__card {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid #dadada;
+        padding-top: 18px;
+        margin-top: 18px;
+    }
+
+    .bank-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 720px) {
+    .prima-legacy-header,
+    .prima-legacy-main,
+    .prima-legacy-footer,
+    .bank-shell__content,
+    .dashboard-hero,
+    .dashboard-panel,
+    .account-card {
+        padding: 18px;
+    }
+
+    .prima-legacy-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .prima-legacy-contact {
+        text-align: left;
+        font-size: 15px;
+    }
+
+    .prima-legacy-login {
+        padding: 20px;
+    }
+
+    .prima-legacy-campaign {
+        min-height: auto;
+        padding: 70px 18px 38px;
+    }
+
+    .prima-legacy-campaign__tab {
+        min-width: 0;
+        width: calc(100% - 36px);
+        font-size: 17px;
+    }
+
+    .prima-legacy-campaign__content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .prima-legacy-rate {
+        font-size: 88px;
+    }
+
+    .prima-legacy-campaign__offer p {
+        font-size: 20px;
+    }
+
+    .prima-legacy-badge {
+        width: 134px;
+        height: 134px;
+        font-size: 18px;
+    }
+
+    .bank-topbar {
+        padding: 14px 18px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .transaction-row,
+    .transaction-table__row,
+    .message-card {
+        flex-direction: column;
+    }
+
+    .transaction-table__meta {
+        justify-items: start;
+        text-align: left;
+    }
+}

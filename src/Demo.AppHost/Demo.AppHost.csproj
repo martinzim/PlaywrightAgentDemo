@@ -12,6 +12,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\AiBrowserTester\AiBrowserTester.csproj" />
 		<ProjectReference Include="..\DemoWeb\DemoWeb.csproj" />
+		<ProjectReference Include="..\Demo.InternetBankingWeb\Demo.InternetBankingWeb.csproj" />
 	</ItemGroup>
 
 </Project>
+

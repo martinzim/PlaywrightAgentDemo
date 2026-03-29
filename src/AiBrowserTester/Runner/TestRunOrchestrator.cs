@@ -36,7 +36,10 @@ public sealed class TestRunOrchestrator(IOptions<BrowserOptions> browserOptions,
                 ChannelOrPath = defaults.ChannelOrPath,
                 Headed = defaults.Headed,
                 TimeoutSeconds = defaults.TimeoutSeconds,
-                StepDelayMilliseconds = defaults.StepDelayMilliseconds
+                StepDelayMilliseconds = defaults.StepDelayMilliseconds,
+                Width = defaults.Width,
+                Height = defaults.Height,
+                StartMaximized = defaults.StartMaximized
             },
             OutputDirectory = Path.GetFullPath(artifactOptions.Value.OutputPath)
         };
@@ -61,10 +64,13 @@ public sealed class TestRunOrchestrator(IOptions<BrowserOptions> browserOptions,
                 case "--browser": request.Browser.Name = next ?? request.Browser.Name; i++; break;
                 case "--headed": request.Browser.Headed = bool.Parse(next ?? "true"); i++; break;
                 case "--step-delay-ms": request.Browser.StepDelayMilliseconds = int.Parse(next ?? "0"); i++; break;
+                case "--width": request.Browser.Width = int.Parse(next ?? request.Browser.Width.ToString()); i++; break;
+                case "--height": request.Browser.Height = int.Parse(next ?? request.Browser.Height.ToString()); i++; break;
+                case "--maximized": request.Browser.StartMaximized = bool.Parse(next ?? "true"); i++; break;
                 case "--output": request.OutputDirectory = Path.GetFullPath(next ?? request.OutputDirectory); i++; break;
             }
         }
-        request.TargetUrl = string.IsNullOrWhiteSpace(request.TargetUrl) ? Environment.GetEnvironmentVariable("Target__BaseUrl") ?? string.Empty : request.TargetUrl;
+        request.TargetUrl = string.IsNullOrWhiteSpace(request.TargetUrl) ? ResolveDefaultTargetUrl() : request.TargetUrl;
         if (string.IsNullOrWhiteSpace(request.Prompt))
         {
             var promptResolution = TryLoadDefaultPrompt();
@@ -103,7 +109,7 @@ public sealed class TestRunOrchestrator(IOptions<BrowserOptions> browserOptions,
             }
         }
 
-        var defaultPrompt = ResolvePromptPath(GetPresetPromptPath("homepage-smoke"));
+        var defaultPrompt = ResolvePromptPath(GetPresetPromptPath("internet-banking-login-dashboard"));
         return File.Exists(defaultPrompt)
             ? (File.ReadAllText(defaultPrompt), defaultPrompt)
             : (string.Empty, string.Empty);
@@ -144,6 +150,30 @@ public sealed class TestRunOrchestrator(IOptions<BrowserOptions> browserOptions,
     {
         var normalized = Path.GetFileNameWithoutExtension(preset.Trim());
         return Path.Combine("prompts", $"{normalized}.md");
+    }
+
+    private static string ResolveDefaultTargetUrl()
+    {
+        var explicitBaseUrl = Environment.GetEnvironmentVariable("Target__BaseUrl");
+        if (!string.IsNullOrWhiteSpace(explicitBaseUrl))
+        {
+            return explicitBaseUrl;
+        }
+
+        var selection = Environment.GetEnvironmentVariable("Target__Selection");
+        if (string.Equals(selection, "external-url", StringComparison.OrdinalIgnoreCase))
+        {
+            return Environment.GetEnvironmentVariable("Target__ExternalUrl") ?? string.Empty;
+        }
+
+        return selection?.Trim().ToLowerInvariant() switch
+        {
+            "demo-web" => Environment.GetEnvironmentVariable("Target__ServiceDemoWebUrl") ?? string.Empty,
+            "internet-banking-web" => Environment.GetEnvironmentVariable("Target__ServiceInternetBankingWebUrl") ?? string.Empty,
+            _ => Environment.GetEnvironmentVariable("Target__ServiceInternetBankingWebUrl")
+                ?? Environment.GetEnvironmentVariable("Target__ServiceDemoWebUrl")
+                ?? string.Empty
+        };
     }
 
     private static string GetRepoRoot() =>

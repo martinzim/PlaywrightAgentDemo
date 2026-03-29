@@ -1,0 +1,41 @@
+@page "/help/security"
+@model Demo.InternetBankingWeb.Pages.Help.SecurityModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bezpecnost internet bankingu</title>
+    <link rel="stylesheet" href="/app.css" />
+</head>
+<body class="security-page">
+    <main class="security-page__wrap prima-security-wrap" data-testid="security-page">
+        <section class="security-page__hero prima-security-hero">
+            <p class="security-page__eyebrow">Prima banka Slovensko, a.s.</p>
+            <h1>Bezpecnostne odporucania</h1>
+            <p>Nikdy neposielajte heslo e-mailom a nepotvrdzujte platby, ktore ste sami nezadali.</p>
+        </section>
+
+        <section class="security-page__content prima-security-grid">
+            <article class="security-card prima-security-card" data-testid="security-card">
+                <h2>Overenie prihlasenia</h2>
+                <ul>
+                    <li>Pouzivajte iba zabezpecene HTTPS spojenie.</li>
+                    <li>Kontrolujte posledne prihlasenie a upozornenia po vstupe do aplikacie.</li>
+                    <li>Pri nezhode autorizacneho kodu platbu okamzite preruste.</li>
+                </ul>
+            </article>
+
+            <article class="security-card prima-security-card">
+                <h2>Demo pristup</h2>
+                <p data-testid="security-demo-credentials">Prihlasovacie meno: demo.klient, heslo: Demo123!</p>
+                <p>Autorizacny kod platby: 246810</p>
+                <a class="bank-link" href="/">Vratit sa na prihlasenie</a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

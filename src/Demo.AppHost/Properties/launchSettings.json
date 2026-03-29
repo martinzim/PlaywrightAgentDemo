@@ -12,11 +12,16 @@
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21287",
         "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22110",
         "DEMO_PROFILE": "local-windows",
+        "Target__Selection": "internet-banking-web",
+        "Target__ExternalUrl": "",
         "AI__Endpoint": "http://localhost:11434",
         "AI__Model": "gpt-oss:20b-cloud",
         "AI__TimeoutSeconds": "300",
         "Browser__StepDelayMilliseconds": "0",
-        "Test__PromptFile": "contact-form.md"
+        "Browser__Width": "1920",
+        "Browser__Height": "1080",
+        "Browser__StartMaximized": "false",
+        "Test__PromptFile": "internet-banking-login-dashboard.md"
       }
     },
     "local-containerized-runner": {
@@ -30,11 +35,16 @@
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21287",
         "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22110",
         "DEMO_PROFILE": "local-containerized-runner",
+        "Target__Selection": "internet-banking-web",
+        "Target__ExternalUrl": "",
         "AI__Endpoint": "http://host.containers.internal:11434",
         "AI__Model": "gpt-oss:20b-cloud",
         "AI__TimeoutSeconds": "300",
         "Browser__StepDelayMilliseconds": "0",
-        "Test__PromptFile": "homepage-smoke.md"
+        "Browser__Width": "1440",
+        "Browser__Height": "900",
+        "Browser__StartMaximized": "false",
+        "Test__PromptFile": "internet-banking-payment-authorization.md"
       }
     },
     "ci-agent": {
@@ -48,11 +58,16 @@
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21287",
         "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22110",
         "DEMO_PROFILE": "ci-agent",
+        "Target__Selection": "internet-banking-web",
+        "Target__ExternalUrl": "",
         "AI__Endpoint": "http://localhost:11434",
         "AI__Model": "gpt-oss:20b-cloud",
         "AI__TimeoutSeconds": "300",
         "Browser__StepDelayMilliseconds": "0",
-        "Test__PromptFile": "homepage-smoke.md"
+        "Browser__Width": "1440",
+        "Browser__Height": "900",
+        "Browser__StartMaximized": "false",
+        "Test__PromptFile": "internet-banking-transaction-search.md"
       }
     }
   }

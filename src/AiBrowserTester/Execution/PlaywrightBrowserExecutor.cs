@@ -11,26 +11,34 @@ public sealed class PlaywrightBrowserExecutor(IArtifactCollector artifactCollect
         ["button[data-testid='cta-book-discovery'], a[data-testid='cta-book-discovery']"] = "[data-testid='hero-cta']",
         ["[data-testid='book-session-cta']"] = "[data-testid='hero-cta']",
         ["button[data-testid='book-session-cta'], a[data-testid='book-session-cta']"] = "[data-testid='hero-cta']",
-        ["input[name='email']"] = "[data-testid='login-email']",
-        ["input[name=\"email\"]"] = "[data-testid='login-email']",
-        ["input[type='email']"] = "[data-testid='login-email']",
+        ["input[name='email']"] = "[data-testid='login-username']",
+        ["input[name=\"email\"]"] = "[data-testid='login-username']",
+        ["input[type='email']"] = "[data-testid='login-username']",
+        ["input[name='username']"] = "[data-testid='login-username']",
+        ["input[name=\"username\"]"] = "[data-testid='login-username']",
+        ["input[name='alias']"] = "[data-testid='login-username']",
+        ["input[name=\"alias\"]"] = "[data-testid='login-username']",
+        ["input[name='pid']"] = "[data-testid='login-username']",
+        ["input[name=\"pid\"]"] = "[data-testid='login-username']",
         ["input[name='password']"] = "[data-testid='login-password']",
         ["input[name=\"password\"]"] = "[data-testid='login-password']",
         ["input[type='password']"] = "[data-testid='login-password']",
         ["button[type='submit']"] = "[data-testid='login-submit']",
         ["button[type=\"submit\"]"] = "[data-testid='login-submit']",
-        ["input[name='name']"] = "[data-testid='contact-name']",
-        ["input[name=\"name\"]"] = "[data-testid='contact-name']",
-        ["input[name='fullName']"] = "[data-testid='contact-name']",
-        ["input[name=\"fullName\"]"] = "[data-testid='contact-name']",
-        ["input[name='email']"] = "[data-testid='contact-email']",
-        ["input[name=\"email\"]"] = "[data-testid='contact-email']",
-        ["input[name='company']"] = "[data-testid='contact-company']",
-        ["input[name=\"company\"]"] = "[data-testid='contact-company']",
-        ["select[name='topic']"] = "[data-testid='contact-topic']",
-        ["select[name=\"topic\"]"] = "[data-testid='contact-topic']",
-        ["textarea[name='message']"] = "[data-testid='contact-message']",
-        ["textarea[name=\"message\"]"] = "[data-testid='contact-message']"
+        ["input[name='recipient']"] = "[data-testid='payment-recipient-name']",
+        ["input[name=\"recipient\"]"] = "[data-testid='payment-recipient-name']",
+        ["input[name='recipientName']"] = "[data-testid='payment-recipient-name']",
+        ["input[name=\"recipientName\"]"] = "[data-testid='payment-recipient-name']",
+        ["input[name='iban']"] = "[data-testid='payment-iban']",
+        ["input[name=\"iban\"]"] = "[data-testid='payment-iban']",
+        ["input[name='amount']"] = "[data-testid='payment-amount']",
+        ["input[name=\"amount\"]"] = "[data-testid='payment-amount']",
+        ["input[name='variableSymbol']"] = "[data-testid='payment-variable-symbol']",
+        ["input[name=\"variableSymbol\"]"] = "[data-testid='payment-variable-symbol']",
+        ["textarea[name='message']"] = "[data-testid='payment-message']",
+        ["textarea[name=\"message\"]"] = "[data-testid='payment-message']",
+        ["select[name='sourceAccount']"] = "[data-testid='payment-source-account']",
+        ["select[name=\"sourceAccount\"]"] = "[data-testid='payment-source-account']"
     };
 
     public async Task<TestRunResult> ExecuteAsync(TestRunRequest request, ScenarioPlan plan, CancellationToken cancellationToken)
@@ -40,7 +48,8 @@ public sealed class PlaywrightBrowserExecutor(IArtifactCollector artifactCollect
 
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await LaunchAsync(playwright, request.Browser);
-        var page = await browser.NewPageAsync(new() { BaseURL = request.TargetUrl });
+        var context = await CreateContextAsync(browser, request);
+        var page = await context.NewPageAsync();
         page.SetDefaultTimeout(request.Browser.TimeoutSeconds * 1000);
 
         try
@@ -67,6 +76,11 @@ public sealed class PlaywrightBrowserExecutor(IArtifactCollector artifactCollect
     private static async Task<IBrowser> LaunchAsync(IPlaywright playwright, BrowserOptions options)
     {
         var launchOptions = new BrowserTypeLaunchOptions { Headless = !options.Headed };
+        if (options.StartMaximized)
+        {
+            launchOptions.Args = ["--start-maximized"];
+        }
+
         if (string.Equals(options.Name, "msedge", StringComparison.OrdinalIgnoreCase))
         {
             launchOptions.Channel = "msedge";
@@ -77,6 +91,30 @@ public sealed class PlaywrightBrowserExecutor(IArtifactCollector artifactCollect
             launchOptions.ExecutablePath = options.ChannelOrPath;
         }
         return await playwright.Chromium.LaunchAsync(launchOptions);
+    }
+
+    private static Task<IBrowserContext> CreateContextAsync(IBrowser browser, TestRunRequest request)
+    {
+        var options = request.Browser;
+        var contextOptions = new BrowserNewContextOptions
+        {
+            BaseURL = request.TargetUrl
+        };
+
+        if (options.StartMaximized)
+        {
+            contextOptions.ViewportSize = ViewportSize.NoViewport;
+        }
+        else
+        {
+            contextOptions.ViewportSize = new ViewportSize
+            {
+                Width = Math.Max(options.Width, 320),
+                Height = Math.Max(options.Height, 240)
+            };
+        }
+
+        return browser.NewContextAsync(contextOptions);
     }
 
     private static async Task ExecuteStepAsync(IPage page, TestStep step, string outputDirectory, CancellationToken cancellationToken)

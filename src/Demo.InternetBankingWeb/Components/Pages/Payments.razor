@@ -1,0 +1,207 @@
+@page "/payments/new"
+@inject BankingPortalState PortalState
+@inject NavigationManager Navigation
+
+<PageTitle>Nova platba | Demo Internet Banking</PageTitle>
+
+@if (!PortalState.IsAuthenticated)
+{
+    <div class="banking-redirect">Presmerovanie na prihlasenie...</div>
+}
+else
+{
+    <section class="dashboard-grid">
+        <header class="dashboard-hero dashboard-hero--compact dashboard-hero--legacy">
+            <div>
+                <p class="dashboard-hero__eyebrow">Platobny prikaz</p>
+                <h1 data-testid="payment-heading">Nova tuzemska platba</h1>
+                <p class="dashboard-hero__text">Vyplnte prijemcu, skontrolujte udaje a potvrďte autorizacnym kodom.</p>
+            </div>
+        </header>
+
+        @if (Receipt is not null)
+        {
+            <section class="dashboard-panel dashboard-panel--legacy payment-success" data-testid="payment-success">
+                <div class="panel-heading">
+                    <h2>Platba bola odoslana</h2>
+                    <p>Potvrdenie je pripravene na kontrolu aj pre automatizovane testy.</p>
+                </div>
+                <dl class="receipt-grid">
+                    <div>
+                        <dt>Referencia</dt>
+                        <dd data-testid="payment-success-reference">@Receipt.Reference</dd>
+                    </div>
+                    <div>
+                        <dt>Prijemca</dt>
+                        <dd>@Receipt.RecipientName</dd>
+                    </div>
+                    <div>
+                        <dt>IBAN</dt>
+                        <dd>@Receipt.RecipientIban</dd>
+                    </div>
+                    <div>
+                        <dt>Suma</dt>
+                        <dd>@Receipt.Amount.ToString("N2") EUR</dd>
+                    </div>
+                </dl>
+                <a class="bank-button bank-button--secondary" href="/accounts" data-testid="payment-success-accounts-link">Skontrolovat pohyb na ucte</a>
+            </section>
+        }
+        else if (Review is null)
+        {
+            <EditForm Model="Transfer" OnValidSubmit="HandleReviewAsync" class="dashboard-panel dashboard-panel--legacy payment-form" data-testid="payment-form">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="panel-heading">
+                    <h2>Udaje prijemcu</h2>
+                    <p>Demo autorizacny kod pre dalsi krok je <strong>246810</strong>.</p>
+                </div>
+
+                <div class="bank-form-grid">
+                    <div class="bank-field">
+                        <label class="bank-label" for="payment-source-account">Ucet odosielatela</label>
+                        <InputSelect id="payment-source-account" class="bank-input" @bind-Value="Transfer.SourceAccountId" data-testid="payment-source-account">
+                            @foreach (var account in PortalState.Accounts)
+                            {
+                                <option value="@account.Id">@account.Title - @account.AccountNumber</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="bank-field">
+                        <label class="bank-label" for="payment-recipient-name">Meno prijemcu</label>
+                        <InputText id="payment-recipient-name" class="bank-input" @bind-Value="Transfer.RecipientName" data-testid="payment-recipient-name" />
+                    </div>
+
+                    <div class="bank-field">
+                        <label class="bank-label" for="payment-iban">IBAN prijemcu</label>
+                        <InputText id="payment-iban" class="bank-input" @bind-Value="Transfer.RecipientIban" data-testid="payment-iban" />
+                    </div>
+
+                    <div class="bank-field">
+                        <label class="bank-label" for="payment-amount">Suma</label>
+                        <InputNumber id="payment-amount" class="bank-input" @bind-Value="Transfer.Amount" data-testid="payment-amount" />
+                    </div>
+
+                    <div class="bank-field">
+                        <label class="bank-label" for="payment-variable-symbol">Variabilny symbol</label>
+                        <InputText id="payment-variable-symbol" class="bank-input" @bind-Value="Transfer.VariableSymbol" data-testid="payment-variable-symbol" />
+                    </div>
+
+                    <div class="bank-field bank-field--wide">
+                        <label class="bank-label" for="payment-message">Sprava pre prijemcu</label>
+                        <InputTextArea id="payment-message" class="bank-input bank-input--textarea" @bind-Value="Transfer.Message" data-testid="payment-message" />
+                    </div>
+                </div>
+
+                <button type="submit" class="bank-button" data-testid="payment-review-submit">Pokracovat na kontrolu</button>
+            </EditForm>
+        }
+        else
+        {
+            <section class="dashboard-panel dashboard-panel--legacy payment-review" data-testid="payment-review">
+                <div class="panel-heading">
+                    <h2>Kontrola a autorizacia</h2>
+                    <p>Pred odoslanim si skontrolujte prijemcu a zadajte demo kod 246810.</p>
+                </div>
+
+                <dl class="receipt-grid">
+                    <div>
+                        <dt>Ucet odosielatela</dt>
+                        <dd>@Review.SourceAccountTitle</dd>
+                    </div>
+                    <div>
+                        <dt>IBAN odosielatela</dt>
+                        <dd>@Review.SourceAccountNumber</dd>
+                    </div>
+                    <div>
+                        <dt>Prijemca</dt>
+                        <dd>@Review.RecipientName</dd>
+                    </div>
+                    <div>
+                        <dt>IBAN prijemcu</dt>
+                        <dd>@Review.RecipientIban</dd>
+                    </div>
+                    <div>
+                        <dt>Suma</dt>
+                        <dd data-testid="payment-review-amount">@Review.Amount.ToString("N2") EUR</dd>
+                    </div>
+                    <div>
+                        <dt>Referencia</dt>
+                        <dd data-testid="payment-review-reference">@Review.Reference</dd>
+                    </div>
+                </dl>
+
+                <div class="bank-form-row">
+                    <label class="bank-label" for="payment-authorize-code">Autorizacny kod</label>
+                    <input id="payment-authorize-code" class="bank-input" data-testid="payment-authorize-code" @bind="AuthorizationCode" />
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                {
+                    <p class="form-error" data-testid="payment-authorize-error">@ErrorMessage</p>
+                }
+
+                <div class="payment-review__actions">
+                    <button class="bank-button" @onclick="HandleAuthorizeAsync" data-testid="payment-authorize-submit">Autorizovat platbu</button>
+                    <button class="bank-button bank-button--secondary" @onclick="HandleBackToEdit" data-testid="payment-review-back">Upravit udaje</button>
+                </div>
+            </section>
+        }
+    </section>
+}
+
+@code {
+    private TransferInput Transfer { get; set; } = new();
+    private TransferReview? Review { get; set; }
+    private TransferReceipt? Receipt { get; set; }
+    private string AuthorizationCode { get; set; } = string.Empty;
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        if (!PortalState.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/", true);
+            return;
+        }
+
+        Transfer.SourceAccountId = PortalState.GetPreferredAccount().Id;
+    }
+
+    private Task HandleReviewAsync()
+    {
+        Review = PortalState.CreateReview(Transfer);
+        ErrorMessage = string.Empty;
+        return Task.CompletedTask;
+    }
+
+    private Task HandleAuthorizeAsync()
+    {
+        if (Review is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        try
+        {
+            Receipt = PortalState.ConfirmTransfer(Review, AuthorizationCode);
+            Review = null;
+            ErrorMessage = string.Empty;
+        }
+        catch (InvalidOperationException ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task HandleBackToEdit()
+    {
+        Review = null;
+        ErrorMessage = string.Empty;
+        return Task.CompletedTask;
+    }
+}

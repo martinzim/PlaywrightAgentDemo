@@ -1,0 +1,119 @@
+@page "/dashboard"
+@inject BankingPortalState PortalState
+@inject NavigationManager Navigation
+
+<PageTitle>Prehlad | Demo Internet Banking</PageTitle>
+
+@if (!PortalState.IsAuthenticated)
+{
+    <div class="banking-redirect">Presmerovanie na prihlasenie...</div>
+}
+else
+{
+    var preferredAccount = PortalState.GetPreferredAccount();
+    var recentTransactions = PortalState.SearchTransactions(null).Take(5).ToArray();
+
+    <section class="dashboard-grid" data-testid="dashboard-shell">
+        <header class="dashboard-hero dashboard-hero--legacy">
+            <div>
+                <p class="dashboard-hero__eyebrow">Osobny ucet</p>
+                <h1 data-testid="dashboard-welcome">Dobry den, @PortalState.CurrentUser!.DisplayName</h1>
+                <p class="dashboard-hero__text">
+                    Posledne prihlasenie: @PortalState.CurrentUser.LastLoginUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                </p>
+            </div>
+            <div class="dashboard-hero__meta" data-testid="dashboard-client-number">
+                Klientske cislo <strong>@PortalState.CurrentUser.ClientNumber</strong>
+            </div>
+        </header>
+
+        <section class="summary-cards summary-cards--legacy">
+            <article class="summary-card" data-testid="summary-primary-account">
+                <span class="summary-card__label">@preferredAccount.Title</span>
+                <strong class="summary-card__value">@preferredAccount.AvailableBalance.ToString("N2") @preferredAccount.Currency</strong>
+                <span class="summary-card__detail">Disponibilny zostatok</span>
+            </article>
+            <article class="summary-card summary-card--calm" data-testid="summary-booked-balance">
+                <span class="summary-card__label">Zuctovany zostatok</span>
+                <strong class="summary-card__value">@preferredAccount.BookedBalance.ToString("N2") @preferredAccount.Currency</strong>
+                <span class="summary-card__detail">@preferredAccount.AccountNumber</span>
+            </article>
+            <article class="summary-card summary-card--dark" data-testid="summary-upcoming-payment">
+                <span class="summary-card__label">Najblizsia platba</span>
+                <strong class="summary-card__value">91,30 EUR</strong>
+                <span class="summary-card__detail">PRISMA ENERGIA zajtra</span>
+            </article>
+        </section>
+
+        <section class="dashboard-panel dashboard-panel--legacy" data-testid="dashboard-quick-actions">
+            <div class="panel-heading">
+                <h2>Rychle akcie</h2>
+                <p>Najcastejsie kroky po prihlaseni.</p>
+            </div>
+            <div class="quick-actions">
+                <a class="quick-action" href="/payments/new" data-testid="quick-action-payment">
+                    <strong>Nova platba</strong>
+                    <span>Okamzity prevod a autorizacia</span>
+                </a>
+                <a class="quick-action" href="/accounts" data-testid="quick-action-transactions">
+                    <strong>Historia pohybov</strong>
+                    <span>Filtrovanie a kontrola poslednych platieb</span>
+                </a>
+                <a class="quick-action" href="/help/security" data-testid="quick-action-security">
+                    <strong>Bezpecnost</strong>
+                    <span>Rady k prihlaseniu a autorizacii</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="dashboard-panel dashboard-panel--legacy" data-testid="dashboard-transactions">
+            <div class="panel-heading">
+                <h2>Posledne pohyby</h2>
+                <p>Aktivita napriec uctami.</p>
+            </div>
+            <div class="transaction-list">
+                @foreach (var transaction in recentTransactions)
+                {
+                    <article class="transaction-row" data-testid="dashboard-transaction-row">
+                        <div>
+                            <strong>@transaction.Counterparty</strong>
+                            <p>@transaction.Description</p>
+                        </div>
+                        <div>
+                            <span>@transaction.Date.ToString("dd.MM.yyyy")</span>
+                            <strong class="@(transaction.Amount >= 0 ? "amount-positive" : "amount-negative")">
+                                @transaction.Amount.ToString("N2") EUR
+                            </strong>
+                        </div>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section class="dashboard-panel dashboard-panel--legacy" data-testid="dashboard-messages">
+            <div class="panel-heading">
+                <h2>Spravy a upozornenia</h2>
+                <p>Stav sluzieb a odporucania.</p>
+            </div>
+            <div class="message-stack">
+                @foreach (var message in PortalState.Messages)
+                {
+                    <article class="message-card">
+                        <strong>@message.Title</strong>
+                        <p>@message.Body</p>
+                    </article>
+                }
+            </div>
+        </section>
+    </section>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!PortalState.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/", true);
+        }
+    }
+}
